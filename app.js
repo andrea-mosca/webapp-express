@@ -8,8 +8,14 @@ app.use(express.static(`public`));
 app.use(express.json());
 
 // ROUTES
+const connection = require("./db/conn.js");
 app.get(`/`, (req, res) => {
-  res.json({ message: "messaggio nel backend" });
+  connection.query("SELECT * FROM movies.movies", (err, results) => {
+    res.json({
+      movies: results,
+    });
+  });
+  //   res.json({ message: "messaggio nel backend" });
 });
 
 // LISTEN
