@@ -37,7 +37,7 @@ const show = (req, res) => {
     connection.query(reviewsSql, [id], (err, reviewsResults) => {
       if (err) return res.status(500).json({ error: "Database query failed" });
 
-      movie.reviews = reviewsResults; // meglio usare 'reviews' al plurale
+      movie.reviews = reviewsResults;
       res.json(movie);
     });
   });
