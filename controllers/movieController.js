@@ -62,7 +62,7 @@ const storeReview = (req, res) => {
         .status(500)
         .json({ message: "Database query failed", error: err });
     console.log(results);
-    res.status(201).json({ message: "review created", id: insertId });
+    res.status(201).json({ message: "review created", id: results.insertId });
   });
 };
 module.exports = { index, show, storeReview };
