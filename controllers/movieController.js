@@ -21,7 +21,9 @@ const show = (req, res) => {
       reviews.vote AS review_vote,
       reviews.text AS review_text,
       reviews.created_at,
-      reviews.updated_at
+      reviews.updated_at,
+      reviews.id
+
     FROM movies.movies
     INNER JOIN movies.reviews ON movies.id = reviews.movie_id
     WHERE movies.id = ?
@@ -35,7 +37,10 @@ const show = (req, res) => {
     const movie = moviesResults[0];
 
     connection.query(reviewsSql, [id], (err, reviewsResults) => {
-      if (err) return res.status(500).json({ error: "Database query failed" });
+      if (err)
+        return res
+          .status(500)
+          .json({ message: "Database query failed", error: err });
 
       movie.reviews = reviewsResults;
       res.json(movie);
@@ -43,4 +48,21 @@ const show = (req, res) => {
   });
 };
 
-module.exports = { index, show };
+const storeReview = (req, res) => {
+  const { id } = req.params;
+  const { name, vote, text } = req.body;
+  const storeReviewSql = `
+    INSERT INTO movies.reviews (movie_id, name, vote, text) 
+    VALUES (?, ?, ?, ?);
+  `;
+  const storeReviewSqlValue = [id, name, vote, text];
+  connection.query(storeReviewSql, storeReviewSqlValue, (err, results) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ message: "Database query failed", error: err });
+    console.log(results);
+    res.status(201).json({ message: "review created", id: insertId });
+  });
+};
+module.exports = { index, show, storeReview };
